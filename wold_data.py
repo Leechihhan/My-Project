@@ -18,20 +18,19 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("My First Pygame Window")
 
 # 定义游戏变量
-tile_size = 37
+tile_size = 35
 game_over = 0
-main_menu = True
-
 
 # 加载并播放背景音乐
-pygame.mixer.music.load("music/game-music-loop.mp3")
-pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.load("music/game-music-loop.mp3")  # 替换为音乐文件路径
+pygame.mixer.music.play(-1)  # 无限循环播放
+pygame.mixer.music.set_volume(0.5)  # 设置音量
 
 # 加载图片
 sun_img = pygame.image.load("img/sun.png")
 bg_img = pygame.image.load("img/Background/Ocean_1/4.png")
-
+# [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+# [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 # 定义地图列表
 world_data = [
    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -50,18 +49,20 @@ world_data = [
    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ]
-
 
 # 实例化玩家、敌人组、陷阱组和地图
 player = Player(100, screen_height - 130)
 slime_group = pygame.sprite.Group()
 spike_group = pygame.sprite.Group()
 world = World(world_data, slime_group, spike_group)
+
+
+
 
 # 游戏循环
 running = True
@@ -79,17 +80,8 @@ while running:
     slime_group.draw(screen)
     spike_group.draw(screen)
 
-    # 屏幕闪烁效果
-    if player.invincible and game_over == 0:
-        if (pygame.time.get_ticks() // 100) % 2 == 0:  # 每 100 毫秒闪烁一次
-            screen.fill((255, 0, 0), special_flags=pygame.BLEND_RGB_ADD)  # 闪烁红色
-
     # 显示玩家并更新游戏状态
     game_over = player.update(game_over, screen, world, slime_group, spike_group)
-    
-    # 绘制血量图标
-    player.draw_health_icons(screen)
-
 
     # 事件处理
     for event in pygame.event.get():
@@ -97,6 +89,9 @@ while running:
             running = False
             pygame.quit()
             sys.exit()
+
+
+
 
     # 刷新屏幕
     pygame.display.flip()
